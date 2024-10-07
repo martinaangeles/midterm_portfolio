@@ -43,7 +43,7 @@ class _MyPortfolioPageState extends State<MyPortfolioPage> {
     final bool isWeb = screenWidth >= 1065;
 
     return Scaffold(
-      body: isWeb ? WebLayout() : const MobileLayout(),
+      body: isWeb ? WebLayout() : MobileLayout(),
     );
   }
 }
@@ -286,7 +286,13 @@ class WebLayout extends StatelessWidget {
 }
 
 class MobileLayout extends StatelessWidget {
-  const MobileLayout({super.key});
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -329,17 +335,20 @@ class MobileLayout extends StatelessWidget {
                   IconButton(
                     icon: const FaIcon(FontAwesomeIcons.linkedin),
                     color: Colors.black,
-                    onPressed: () {},
+                    onPressed: () => _launchURL(
+                        'https://www.linkedin.com/in/martina-aaron-angeles/'),
                   ),
                   IconButton(
                     icon: const FaIcon(FontAwesomeIcons.facebook),
                     color: Colors.black,
-                    onPressed: () {},
+                    onPressed: () =>
+                        _launchURL('https://www.facebook.com/martinaangeless'),
                   ),
                   IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.twitter),
+                    icon: const FaIcon(FontAwesomeIcons.github),
                     color: Colors.black,
-                    onPressed: () {},
+                    onPressed: () =>
+                        _launchURL('https://github.com/martinaangeles'),
                   ),
                 ],
               ),
