@@ -112,6 +112,7 @@ class WebLayout extends StatelessWidget {
             _buildHeroSection(),
             _buildAboutSection(),
             _buildProjectsSection(),
+            _buildContactMeSection(),
           ],
         ),
       ),
@@ -182,6 +183,7 @@ class WebLayout extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0.0),
                   ),
+                  side: const BorderSide(color: Colors.white),
                 ),
                 child: const Text('CONTACT ME'),
               ),
@@ -255,7 +257,7 @@ class WebLayout extends StatelessWidget {
 
   Widget _buildProjectsSection() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 100.0),
+      padding: const EdgeInsets.fromLTRB(100, 60, 100, 200),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -277,13 +279,13 @@ class WebLayout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+              ProjectBox('Guardian Disaster App', 'assets/1.png'),
               const SizedBox(width: 20),
-              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+              ProjectBox('Never for Ever! E-commerce', 'assets/2.png'),
               const SizedBox(width: 20),
-              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+              ProjectBox('Never for Ever! Admin', 'assets/3.png'),
               const SizedBox(width: 20),
-              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+              ProjectBox('ALL Bookstore Website', 'assets/4.png'),
             ],
           ),
         ],
@@ -291,25 +293,173 @@ class WebLayout extends StatelessWidget {
     );
   }
 
-  Widget ProjectBox(String title, Color color) {
+  Widget ProjectBox(String title, String assetPath) {
     return Container(
       width: 300,
-      height: 400,
+      height: 450,
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        color: color,
+        borderRadius: BorderRadius.circular(0.0),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 40,
-              color: Colors.white,
+          Positioned.fill(
+            child: Image.asset(
+              assetPath,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              color: Colors.brown.withOpacity(0.6),
+            ),
+          ),
+          Container(
+            alignment:
+                Alignment.center, // Align the content within the container
+            padding: const EdgeInsets.only(top: 250), // Adjust top padding only
+            child: OutlinedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 20.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0.0),
+                ),
+                side: const BorderSide(color: Colors.white),
+              ),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildContactMeSection() {
+    final _formKey = GlobalKey<FormState>();
+
+    return Container(
+      color: const Color(0xFF2C2C2C),
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Get in Touch',
+            style: TextStyle(
+              fontSize: 24,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Feel free to reach out for collaborations or just a friendly chat!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _buildTextField('Name'),
+                const SizedBox(height: 10),
+                _buildTextField('Email'),
+                const SizedBox(height: 10),
+                _buildTextField('Message', maxLines: 4),
+                const SizedBox(height: 20),
+                OutlinedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // Handle form submission here
+                      print('Form submitted!');
+                    }
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.white),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
+                  ),
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 30),
+
+          // Social Icons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const FaIcon(FontAwesomeIcons.linkedin),
+                color: Colors.white,
+                onPressed: () => _launchURL(
+                    'https://www.linkedin.com/in/martina-aaron-angeles/'),
+              ),
+              IconButton(
+                icon: const FaIcon(FontAwesomeIcons.github),
+                color: Colors.white,
+                onPressed: () =>
+                    _launchURL('https://github.com/martinaangeles'),
+              ),
+              IconButton(
+                icon: const FaIcon(FontAwesomeIcons.facebook),
+                color: Colors.white,
+                onPressed: () =>
+                    _launchURL('https://www.facebook.com/martinaangeless'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // Copyright
+          const Text(
+            '© 2024 Martina Angeles. All Rights Reserved.',
+            style: TextStyle(color: Colors.grey, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, {int maxLines = 1}) {
+    return TextFormField(
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.grey),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your $label';
+        }
+        return null;
+      },
     );
   }
 }
