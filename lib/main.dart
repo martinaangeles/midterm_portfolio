@@ -49,9 +49,10 @@ class _MyPortfolioPageState extends State<MyPortfolioPage> {
 }
 
 class WebLayout extends StatelessWidget {
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       throw 'Could not launch $url';
     }
@@ -65,7 +66,7 @@ class WebLayout extends StatelessWidget {
         backgroundColor: Colors.white,
         toolbarHeight: 80,
         flexibleSpace: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 100.0),
+          padding: const EdgeInsets.symmetric(horizontal: 100),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -78,77 +79,26 @@ class WebLayout extends StatelessWidget {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "HOME",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "ABOUT",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "PROJECTS",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "CONTACT",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildNavButton("HOME", () {}),
+                  _buildNavButton("ABOUT", () {}),
+                  _buildNavButton("PROJECTS", () {}),
+                  _buildNavButton("CONTACT", () {}),
                 ],
               ),
               Row(
                 children: [
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.linkedin),
-                    color: Colors.black,
-                    onPressed: () => _launchURL(
-                        'https://www.linkedin.com/in/martina-aaron-angeles/'),
+                  _buildIconButton(
+                    FontAwesomeIcons.linkedin,
+                    'https://www.linkedin.com/in/martina-aaron-angeles/',
                   ),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.facebook),
-                    color: Colors.black,
-                    onPressed: () =>
-                        _launchURL('https://www.facebook.com/martinaangeless'),
+                  _buildIconButton(
+                    FontAwesomeIcons.facebook,
+                    'https://www.facebook.com/martinaangeless',
                   ),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.github),
-                    color: Colors.black,
-                    onPressed: () =>
-                        _launchURL('https://github.com/martinaangeles'),
+                  _buildIconButton(
+                    FontAwesomeIcons.github,
+                    'https://github.com/martinaangeles',
                   ),
                 ],
               ),
@@ -159,127 +109,206 @@ class WebLayout extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 500,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                          'https://i.ibb.co/M969JZ0/9b4a249a-c7e7-47e7-8e7c-89e898f33a62.jpg'),
-                      fit: BoxFit.cover,
-                    ),
+            _buildHeroSection(),
+            _buildAboutSection(),
+            _buildProjectsSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String text, VoidCallback onPressed) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, String url) {
+    return IconButton(
+      icon: FaIcon(icon),
+      color: Colors.black,
+      onPressed: () => _launchURL(url),
+    );
+  }
+
+  Widget _buildHeroSection() {
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          height: 500,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                  'https://i.ibb.co/M969JZ0/9b4a249a-c7e7-47e7-8e7c-89e898f33a62.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned(
+          top: 100,
+          left: 100,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Martina Angeles',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Web Developer & Designer',
+                style: TextStyle(color: Colors.white, fontSize: 29),
+              ),
+              const SizedBox(height: 50),
+              OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 20.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.0),
                   ),
                 ),
-                Positioned(
-                  top: 100,
-                  left: 100,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Martina Angeles',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Web Developer & Designer',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 29,
-                        ),
-                      ),
-                      const SizedBox(height: 50),
-                      OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 20.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0.0),
-                          ),
-                        ),
-                        child: const Text('CONTACT ME'), // Button's label
+                child: const Text('CONTACT ME'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAboutSection() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 100.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            width: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'About me',
+                  style: TextStyle(
+                    fontSize: 40,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 10.0,
+                        color: Colors.grey,
+                        offset: Offset(3, 3),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 60.0, horizontal: 100.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      width: 300,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'About me',
-                            style: TextStyle(
-                              fontSize: 40,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 10.0,
-                                  color: Colors.grey,
-                                  offset: Offset(3, 3),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 10),
-                          const Text(
-                            'She/ Her. I am a skilled and motivated 4th-year Bachelor of Computer '
-                            'Science student at the Ateneo de Davao University. I specialize in creating '
-                            'Front-end designs and is passionate for web development. ',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 35, 34, 34),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 20.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0.0),
-                              ),
-                            ),
-                            child: const Text(
-                              'Download Resume',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ), // Button's label
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                const Text(
+                  'She/Her. I am Mina from Davao City, Philippines. I am a creative and an aspiring web developer that specializes in Front-End development. I am currently a student in the Ateneo de Davao University majoring in Computer Science. I love coding as well as doing multimedia arts! Enjoy Browsing :D',
+                  style: TextStyle(fontSize: 16),
                 ),
-              ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 35, 34, 34),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 20.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Download Resume',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProjectsSection() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 100.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'My Projects',
+            style: TextStyle(
+              fontSize: 40,
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.grey,
+                  offset: Offset(3, 3),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 60),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+              const SizedBox(width: 20),
+              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+              const SizedBox(width: 20),
+              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+              const SizedBox(width: 20),
+              ProjectBox('Guardian', const Color.fromARGB(255, 35, 34, 34)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget ProjectBox(String title, Color color) {
+    return Container(
+      width: 300,
+      height: 400,
+      decoration: BoxDecoration(
+        color: color,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 40,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }
