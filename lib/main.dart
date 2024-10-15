@@ -433,6 +433,9 @@ class WebLayout extends StatelessWidget {
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
                     side: const BorderSide(color: Colors.white),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 15),
