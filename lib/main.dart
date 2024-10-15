@@ -37,18 +37,49 @@ class MyPortfolioPage extends StatefulWidget {
 }
 
 class _MyPortfolioPageState extends State<MyPortfolioPage> {
+  final ScrollController _scrollController = ScrollController();
+
+  // Define keys for each section
+  final GlobalKey _homeKey = GlobalKey();
+  final GlobalKey _aboutKey = GlobalKey();
+  final GlobalKey _projectsKey = GlobalKey();
+  final GlobalKey _contactKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final bool isWeb = screenWidth >= 1065;
 
     return Scaffold(
-      body: isWeb ? WebLayout() : MobileLayout(),
+      body: isWeb
+          ? WebLayout(
+              scrollController: _scrollController,
+              homeKey: _homeKey,
+              aboutKey: _aboutKey,
+              projectsKey: _projectsKey,
+              contactKey: _contactKey,
+            )
+          : MobileLayout(),
     );
   }
 }
 
 class WebLayout extends StatelessWidget {
+  final ScrollController scrollController;
+  final GlobalKey homeKey;
+  final GlobalKey aboutKey;
+  final GlobalKey projectsKey;
+  final GlobalKey contactKey;
+
+  const WebLayout({
+    required this.scrollController,
+    required this.homeKey,
+    required this.aboutKey,
+    required this.projectsKey,
+    required this.contactKey,
+    super.key,
+  });
+
   Future<void> _launchURL(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -80,10 +111,12 @@ class WebLayout extends StatelessWidget {
               ),
               Row(
                 children: [
-                  _buildNavButton("HOME", () {}),
-                  _buildNavButton("ABOUT", () {}),
-                  _buildNavButton("PROJECTS", () {}),
-                  _buildNavButton("CONTACT", () {}),
+                  _buildNavButton("HOME", () => _scrollToSection(homeKey)),
+                  _buildNavButton("ABOUT", () => _scrollToSection(aboutKey)),
+                  _buildNavButton(
+                      "PROJECTS", () => _scrollToSection(projectsKey)),
+                  _buildNavButton(
+                      "CONTACT", () => _scrollToSection(contactKey)),
                 ],
               ),
               Row(
@@ -107,12 +140,13 @@ class WebLayout extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
+        controller: scrollController,
         child: Column(
           children: [
-            _buildHeroSection(),
-            _buildAboutSection(),
-            _buildProjectsSection(),
-            _buildContactMeSection(),
+            Container(key: homeKey, child: _buildHeroSection()),
+            Container(key: aboutKey, child: _buildAboutSection()),
+            Container(key: projectsKey, child: _buildProjectsSection()),
+            Container(key: contactKey, child: _buildContactMeSection()),
           ],
         ),
       ),
@@ -130,6 +164,11 @@ class WebLayout extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _scrollToSection(GlobalKey key) {
+    Scrollable.ensureVisible(key.currentContext!,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
   Widget _buildIconButton(IconData icon, String url) {
@@ -235,7 +274,7 @@ class WebLayout extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 35, 34, 34),
+                    backgroundColor: Color(0xFF2C2C2C),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0, vertical: 20.0),
                     shape: RoundedRectangleBorder(
@@ -279,13 +318,17 @@ class WebLayout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ProjectBox('Guardian Disaster App', 'assets/1.png'),
+              ProjectBox('Guardian Disaster App', 'assets/1.png',
+                  'https://www.behance.net/gallery/197708221/Guardian-Disaster-Emergency-App'),
               const SizedBox(width: 20),
-              ProjectBox('Never for Ever! E-commerce', 'assets/2.png'),
+              ProjectBox('Never for Ever! E-commerce', 'assets/2.png',
+                  'https://github.com/kristine-ag/sad2-ecommerce/tree/ecommerce'),
               const SizedBox(width: 20),
-              ProjectBox('Never for Ever! Admin', 'assets/3.png'),
+              ProjectBox('Never for Ever! Admin', 'assets/3.png',
+                  'https://github.com/kristine-ag/sad2-ecommerce/tree/admin'),
               const SizedBox(width: 20),
-              ProjectBox('ALL Bookstore Website', 'assets/4.png'),
+              ProjectBox('ALL Bookstore Website', 'assets/4.png',
+                  'https://github.com/yvannnZL/all-bookstore'),
             ],
           ),
         ],
@@ -293,7 +336,7 @@ class WebLayout extends StatelessWidget {
     );
   }
 
-  Widget ProjectBox(String title, String assetPath) {
+  Widget ProjectBox(String title, String assetPath, String link) {
     return Container(
       width: 300,
       height: 450,
@@ -319,7 +362,7 @@ class WebLayout extends StatelessWidget {
                 Alignment.center, // Align the content within the container
             padding: const EdgeInsets.only(top: 250), // Adjust top padding only
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () => _launchURL(link),
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
