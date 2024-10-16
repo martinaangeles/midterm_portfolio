@@ -295,7 +295,7 @@ class WebLayout extends StatelessWidget {
   }
 
   Widget _buildProjectsSection() {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.fromLTRB(100, 60, 100, 200),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -314,21 +314,31 @@ class WebLayout extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 60),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Wrap(
+            spacing: 20, // Horizontal space between project boxes
+            runSpacing: 20, // Vertical space between rows of project boxes
+            alignment: WrapAlignment.center,
             children: [
-              ProjectBox('Guardian Disaster App', 'assets/1.png',
-                  'https://www.behance.net/gallery/197708221/Guardian-Disaster-Emergency-App'),
-              const SizedBox(width: 20),
-              ProjectBox('Never for Ever! E-commerce', 'assets/2.png',
-                  'https://github.com/kristine-ag/sad2-ecommerce/tree/ecommerce'),
-              const SizedBox(width: 20),
-              ProjectBox('Never for Ever! Admin', 'assets/3.png',
-                  'https://github.com/kristine-ag/sad2-ecommerce/tree/admin'),
-              const SizedBox(width: 20),
-              ProjectBox('ALL Bookstore Website', 'assets/4.png',
-                  'https://github.com/yvannnZL/all-bookstore'),
+              ProjectBox(
+                'Guardian Disaster App',
+                'assets/1.png',
+                'https://www.behance.net/gallery/197708221/Guardian-Disaster-Emergency-App',
+              ),
+              ProjectBox(
+                'Never for Ever! E-commerce',
+                'assets/2.png',
+                'https://github.com/kristine-ag/sad2-ecommerce/tree/ecommerce',
+              ),
+              ProjectBox(
+                'Never for Ever! Admin',
+                'assets/3.png',
+                'https://github.com/kristine-ag/sad2-ecommerce/tree/admin',
+              ),
+              ProjectBox(
+                'ALL Bookstore Website',
+                'assets/4.png',
+                'https://github.com/yvannnZL/all-bookstore',
+              ),
             ],
           ),
         ],
@@ -511,7 +521,9 @@ class WebLayout extends StatelessWidget {
 }
 
 class MobileLayout extends StatelessWidget {
-  void _launchURL(String url) async {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -523,224 +535,372 @@ class MobileLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        flexibleSpace: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Builder(
-                    builder: (context) => IconButton(
-                      icon: const Icon(Icons.menu, color: Colors.black),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'MA',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.linkedin),
-                    color: Colors.black,
-                    onPressed: () => _launchURL(
-                        'https://www.linkedin.com/in/martina-aaron-angeles/'),
-                  ),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.facebook),
-                    color: Colors.black,
-                    onPressed: () =>
-                        _launchURL('https://www.facebook.com/martinaangeless'),
-                  ),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.github),
-                    color: Colors.black,
-                    onPressed: () =>
-                        _launchURL('https://github.com/martinaangeles'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              child: Text(
-                'MA',
-                style: TextStyle(
-                  height: 5,
-                  fontSize: 30,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text(
-                ">HOME",
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text(
-                ">ABOUT",
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text(
-                ">PROJECTS",
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text(
-                ">CONTACT",
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
+      appBar: _buildAppBar(context),
+      drawer: _buildDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              alignment: Alignment.topCenter,
+            _buildHeaderSection(),
+            _buildAboutSection(),
+            _buildProjectsSection(),
+            _buildContactFormSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      toolbarHeight: 80,
+      backgroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      flexibleSpace: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               children: [
-                Container(
-                  width: double.infinity,
-                  height: 500,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        'https://i.ibb.co/M969JZ0/9b4a249a-c7e7-47e7-8e7c-89e898f33a62.jpg',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: const Icon(Icons.menu, color: Colors.black),
+                    onPressed: () => Scaffold.of(context).openDrawer(),
                   ),
                 ),
-                Positioned(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 50),
-                      const Text(
-                        'Martina Angeles',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      const Text(
-                        'Web Developer & Designer',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 29,
-                        ),
-                      ),
-                      const SizedBox(height: 250),
-                      OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 20.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0.0),
-                          ),
-                        ),
-                        child: const Text('CONTACT ME'),
-                      ),
-                    ],
+                const SizedBox(width: 10),
+                const Text(
+                  'MA',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 50.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'About me',
-                      style: TextStyle(
-                        fontSize: 40,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 10.0,
-                            color: Colors.grey,
-                            offset: Offset(3, 3),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'She/ Her. I am a skilled and motivated 4th-year Bachelor of Computer Science student '
-                      'at Ateneo de Davao University. I specialize in creating front-end designs and am passionate about web development.',
-                      style: TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 35, 34, 34),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 20.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Download Resume',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
+            _buildSocialIcons(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Drawer _buildDrawer() {
+    return Drawer(
+      backgroundColor: Colors.white,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            child: Text(
+              'MA',
+              style: TextStyle(fontSize: 30, height: 5),
+            ),
+          ),
+          _buildDrawerItem(">HOME"),
+          _buildDrawerItem(">ABOUT"),
+          _buildDrawerItem(">PROJECTS"),
+          _buildDrawerItem(">CONTACT"),
+        ],
+      ),
+    );
+  }
+
+  ListTile _buildDrawerItem(String title) {
+    return ListTile(
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.black),
+      ),
+      onTap: () {},
+    );
+  }
+
+  Widget _buildHeaderSection() {
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          width: double.infinity,
+          height: 500,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                'https://i.ibb.co/M969JZ0/9b4a249a-c7e7-47e7-8e7c-89e898f33a62.jpg',
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned(
+          child: Column(
+            children: [
+              const SizedBox(height: 50),
+              const Text(
+                'Martina Angeles',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+              const SizedBox(height: 5),
+              const Text(
+                'Web Developer & Designer',
+                style: TextStyle(color: Colors.white, fontSize: 29),
+              ),
+              const SizedBox(height: 250),
+              OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 20.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.0),
+                  ),
+                  side: const BorderSide(color: Colors.white),
+                ),
+                child: const Text('CONTACT ME'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAboutSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'About me',
+            style: TextStyle(
+              fontSize: 40,
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.grey,
+                  offset: Offset(3, 3),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'She/ Her. I am a skilled and motivated 4th-year Bachelor of Computer Science '
+            'student at Ateneo de Davao University. I specialize in front-end design and '
+            'am passionate about web development.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF232222),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.0),
+              ),
+            ),
+            child: const Text(
+              'Download Resume',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProjectsSection() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(40, 60, 40, 200),
+      child: Column(
+        children: [
+          const Text(
+            'My Projects',
+            style: TextStyle(
+              fontSize: 40,
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.grey,
+                  offset: Offset(3, 3),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 60),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildProjectBox(
+                'Guardian Disaster App',
+                'assets/1.png',
+                'https://www.behance.net/gallery/197708221/Guardian-Disaster-Emergency-App',
+              ),
+              const SizedBox(height: 20),
+              _buildProjectBox(
+                'Never for Ever! E-commerce',
+                'assets/2.png',
+                'https://github.com/kristine-ag/sad2-ecommerce/tree/ecommerce',
+              ),
+              const SizedBox(height: 20),
+              _buildProjectBox(
+                'Never for Ever! Admin',
+                'assets/3.png',
+                'https://github.com/kristine-ag/sad2-ecommerce/tree/admin',
+              ),
+              const SizedBox(height: 20),
+              _buildProjectBox(
+                'ALL Bookstore Website',
+                'assets/4.png',
+                'https://github.com/yvannnZL/all-bookstore',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProjectBox(String title, String assetPath, String link) {
+    return Container(
+      width: 300,
+      height: 450,
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(0.0),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(assetPath, fit: BoxFit.cover),
+          ),
+          Positioned.fill(
+            child: Container(color: Colors.brown.withOpacity(0.6)),
+          ),
+          Container(
+            alignment:
+                Alignment.center, // Align the content within the container
+            padding: const EdgeInsets.only(top: 250), // Adjust top padding only
+            child: OutlinedButton(
+              onPressed: () => _launchURL(link),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 20.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0.0),
+                ),
+                side: const BorderSide(color: Colors.white),
+              ),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactFormSection() {
+    return Container(
+      color: const Color(0xFF2C2C2C),
+      padding: const EdgeInsets.all(40),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            const Text(
+              'Get in Touch',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildTextField('Name'),
+            const SizedBox(height: 10),
+            _buildTextField('Email'),
+            const SizedBox(height: 10),
+            _buildTextField('Message', maxLines: 4),
+            const SizedBox(height: 20),
+            OutlinedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  print('Form submitted!');
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 20.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0.0),
+                ),
+                side: const BorderSide(color: Colors.white),
+              ),
+              child: const Text('Submit', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(String label, {int maxLines = 1}) {
+    return TextFormField(
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.grey),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildSocialIcons() {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => _launchURL('https://github.com'),
+          icon: const FaIcon(FontAwesomeIcons.github),
+        ),
+        IconButton(
+          onPressed: () => _launchURL('https://linkedin.com'),
+          icon: const FaIcon(FontAwesomeIcons.linkedin),
+        ),
+        IconButton(
+          onPressed: () => _launchURL('https://twitter.com'),
+          icon: const FaIcon(FontAwesomeIcons.twitter),
+        ),
+      ],
     );
   }
 }
