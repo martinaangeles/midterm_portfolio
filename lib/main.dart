@@ -39,7 +39,6 @@ class MyPortfolioPage extends StatefulWidget {
 class _MyPortfolioPageState extends State<MyPortfolioPage> {
   final ScrollController _scrollController = ScrollController();
 
-  // Define keys for each section
   final GlobalKey _homeKey = GlobalKey();
   final GlobalKey _aboutKey = GlobalKey();
   final GlobalKey _projectsKey = GlobalKey();
@@ -251,9 +250,9 @@ class WebLayout extends StatelessWidget {
                     fontSize: 40,
                     shadows: [
                       Shadow(
-                        blurRadius: 10.0,
+                        blurRadius: 3.0,
                         color: Colors.grey,
-                        offset: Offset(3, 3),
+                        offset: Offset(3, 5),
                       ),
                     ],
                   ),
@@ -306,17 +305,17 @@ class WebLayout extends StatelessWidget {
               fontSize: 40,
               shadows: [
                 Shadow(
-                  blurRadius: 10.0,
+                  blurRadius: 3.0,
                   color: Colors.grey,
-                  offset: Offset(3, 3),
+                  offset: Offset(3, 5),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 60),
           Wrap(
-            spacing: 20, // Horizontal space between project boxes
-            runSpacing: 20, // Vertical space between rows of project boxes
+            spacing: 20,
+            runSpacing: 20,
             alignment: WrapAlignment.center,
             children: [
               ProjectBox(
@@ -368,9 +367,8 @@ class WebLayout extends StatelessWidget {
             ),
           ),
           Container(
-            alignment:
-                Alignment.center, // Align the content within the container
-            padding: const EdgeInsets.only(top: 250), // Adjust top padding only
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(top: 250),
             child: OutlinedButton(
               onPressed: () => _launchURL(link),
               style: OutlinedButton.styleFrom(
@@ -423,7 +421,6 @@ class WebLayout extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-
           Form(
             key: _formKey,
             child: Column(
@@ -437,7 +434,6 @@ class WebLayout extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Handle form submission here
                       print('Form submitted!');
                     }
                   },
@@ -459,8 +455,6 @@ class WebLayout extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-
-          // Social Icons
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -485,8 +479,6 @@ class WebLayout extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-
-          // Copyright
           const Text(
             '© 2024 Martina Angeles. All Rights Reserved.',
             style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -684,9 +676,9 @@ class MobileLayout extends StatelessWidget {
               fontSize: 40,
               shadows: [
                 Shadow(
-                  blurRadius: 10.0,
+                  blurRadius: 3.0,
                   color: Colors.grey,
-                  offset: Offset(3, 3),
+                  offset: Offset(3, 5),
                 ),
               ],
             ),
@@ -731,9 +723,9 @@ class MobileLayout extends StatelessWidget {
               fontSize: 40,
               shadows: [
                 Shadow(
-                  blurRadius: 10.0,
+                  blurRadius: 3.0,
                   color: Colors.grey,
-                  offset: Offset(3, 3),
+                  offset: Offset(3, 5),
                 ),
               ],
             ),
@@ -789,9 +781,8 @@ class MobileLayout extends StatelessWidget {
             child: Container(color: Colors.brown.withOpacity(0.6)),
           ),
           Container(
-            alignment:
-                Alignment.center, // Align the content within the container
-            padding: const EdgeInsets.only(top: 250), // Adjust top padding only
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(top: 250),
             child: OutlinedButton(
               onPressed: () => _launchURL(link),
               style: OutlinedButton.styleFrom(
